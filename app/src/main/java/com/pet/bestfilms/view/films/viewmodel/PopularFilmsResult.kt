@@ -6,6 +6,6 @@ import java.lang.Exception
 sealed class PopularFilmsResult {
     object EmptyResult : PopularFilmsResult()
     object Loading : PopularFilmsResult()
-    class SuccessResult(data: PopularFilmsLocal): PopularFilmsResult()
-    class ErrorResult(exception: Exception): PopularFilmsResult()
+    class SuccessResult(val data: PopularFilmsLocal): PopularFilmsResult()
+    class ErrorResult(val exception: Exception): PopularFilmsResult()
 }

@@ -23,7 +23,7 @@ android {
         versionCode 1
         versionName "1.0"
         buildConfigField("String", "API_KEY", apikeyProperties['FILMS_API_KEY'])
-       buildConfigField "String", "BASE_URL",  apikeyProperties['FILMS_BASE_URL']
+        buildConfigField "String", "BASE_URL",  apikeyProperties['FILMS_BASE_URL']
     }
 
     buildTypes {

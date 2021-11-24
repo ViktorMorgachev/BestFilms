@@ -7,13 +7,14 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.pet.bestfilms.R
 import com.pet.bestfilms.databinding.FragmentPopularFilmsBinding
 import com.pet.bestfilms.utils.gone
-import com.pet.bestfilms.utils.hideKeyboard
 import com.pet.bestfilms.utils.visible
+import com.pet.bestfilms.view.PaginationScrollListener
+import com.pet.bestfilms.view.customview.ItemOffsetDecoration
+import com.pet.bestfilms.view.films.viewmodel.FilmsAdapter
 import com.pet.bestfilms.view.films.viewmodel.FilmsViewModel
 import com.pet.bestfilms.view.films.viewmodel.GridSpacingItemDecoration
 import com.pet.bestfilms.view.films.viewmodel.PopularFilmsResult
@@ -26,6 +27,8 @@ class FilmsFragment : Fragment() {
 
     private val binding by viewBinding(FragmentPopularFilmsBinding::bind)
 
+    private val filmsAdapter = FilmsAdapter()
+
     private fun setupFilmsList() {
         val spanCount = when (resources.configuration.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> 4
@@ -34,21 +37,22 @@ class FilmsFragment : Fragment() {
         binding.filmsList.apply {
             layoutManager = GridLayoutManager(activity, spanCount)
             adapter = null
-            addItemDecoration(
-                GridSpacingItemDecoration(
-                    spanCount,
-                    resources.getDimension(R.dimen.itemsDist).toInt(),
-                    true
-                )
-            )
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                        recyclerView.hideKeyboard()
-                    }
+            addItemDecoration(ItemOffsetDecoration(20))
+         /*   addOnScrollListener(object : PaginationScrollListener(layoutManager = layoutManager as GridLayoutManager) {
+                override fun loadMoreItems() {
+                    showLoading()
+
                 }
-            })
+
+                override fun isLastPage(): Boolean {
+                    return isLastPage;
+                }
+
+                override fun isLoading(): Boolean {
+                    return isLoading;
+                }
+
+            })*/
         }
     }
 
@@ -66,7 +70,9 @@ class FilmsFragment : Fragment() {
                 hideLoading()
                 binding.filmsPlaceholder.gone()
                 binding.filmsList.visible()
-                //.submitList(state.result)
+                lifecycleScope.launch {
+                  //  filmsAdapter.submitData(state.data.results)
+                }
             }
             is PopularFilmsResult.ErrorResult -> {
                 hideLoading()
